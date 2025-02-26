@@ -12,6 +12,7 @@ public class EmployeePayrollController {
     // uc1  uploading data to the database
     @Autowired
     private EmployeePayrollRepository repo;
+    // post method
     @PostMapping("/create")
     public ResponseEntity<String> createEmployee(@RequestBody Employee employee) {
         repo.save(employee);

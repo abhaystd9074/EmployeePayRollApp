@@ -14,7 +14,7 @@ public class Employee {
     private Long id;
     private String name;
     private double salary;
-    // constructor to provide data
+    // constructor to provide data to variables
     public Employee(String name, double salary){
         this.name=name;
         this.salary=salary;
