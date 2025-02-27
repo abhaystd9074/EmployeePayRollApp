@@ -5,45 +5,50 @@ import com.bridgelabz.employeepayrollapp.repository.EmployeePayrollRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
 @Service
 public class EmployeePayrollService {
-  // uc2 section1
-    @Autowired
-    private EmployeePayrollRepository repo;
+  // uc3 section2
+
+    private final List<Employee> employeeList = new ArrayList<>();
+    private Long employeeIdCounter = 1L; // To assign unique IDs
 
     // Create Employee
     public Employee createEmployee(Employee employee) {
-        return repo.save(employee);
+        employee.setId(employeeIdCounter++); // Manually set unique ID
+        employeeList.add(employee);
+        return employee;
     }
 
     // Get All Employees
     public List<Employee> getAllEmployees() {
-        return repo.findAll();
+        return employeeList;
     }
 
     // Get Employee by ID
     public Optional<Employee> getEmployeeById(Long id) {
-        return repo.findById(id);
+        return employeeList.stream()
+                .filter(employee -> employee.getId().equals(id))
+                .findFirst();
     }
 
     // Update Employee
     public Optional<Employee> updateEmployee(Long id, Employee updatedEmployee) {
-        return repo.findById(id).map(employee -> {
-            employee.setName(updatedEmployee.getName());
-            employee.setSalary(updatedEmployee.getSalary());
-            return repo.save(employee);
-        });
+        return employeeList.stream()
+                .filter(employee -> employee.getId().equals(id))
+                .findFirst()
+                .map(employee -> {
+                    employee.setName(updatedEmployee.getName());
+                    employee.setSalary(updatedEmployee.getSalary());
+                    return employee;
+                });
     }
 
     // Delete Employee
     public boolean deleteEmployee(Long id) {
-        if (repo.existsById(id)) {
-            repo.deleteById(id);
-            return true;
-        }
-        return false;
+        return employeeList.removeIf(employee -> employee.getId().equals(id));
     }
 }
