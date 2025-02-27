@@ -5,50 +5,45 @@ import com.bridgelabz.employeepayrollapp.repository.EmployeePayrollRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
 @Service
 public class EmployeePayrollService {
-  // uc3 section2
 
-    private final List<Employee> employeeList = new ArrayList<>();
-    private Long employeeIdCounter = 1L; // To assign unique IDs
+    @Autowired
+    private EmployeePayrollRepository repo;
 
     // Create Employee
-    public Employee createEmployee(Employee employee) {
-        employee.setId(employeeIdCounter++); // Manually set unique ID
-        employeeList.add(employee);
-        return employee;
-    }
-
-    // Get All Employees
-    public List<Employee> getAllEmployees() {
-        return employeeList;
+    public Employee createEmployee(String name, double salary) {
+        Employee employee = new Employee(name, salary); // No need to set manually
+        return repo.save(employee);
     }
 
     // Get Employee by ID
     public Optional<Employee> getEmployeeById(Long id) {
-        return employeeList.stream()
-                .filter(employee -> employee.getId().equals(id))
-                .findFirst();
+        return repo.findById(id);
+    }
+
+    // Get All Employees
+    public List<Employee> getAllEmployees() {
+        return repo.findAll();
     }
 
     // Update Employee
-    public Optional<Employee> updateEmployee(Long id, Employee updatedEmployee) {
-        return employeeList.stream()
-                .filter(employee -> employee.getId().equals(id))
-                .findFirst()
-                .map(employee -> {
-                    employee.setName(updatedEmployee.getName());
-                    employee.setSalary(updatedEmployee.getSalary());
-                    return employee;
-                });
+    public Employee updateEmployee(Long id, String name, double salary) {
+        Optional<Employee> existingEmployee = repo.findById(id);
+        if (existingEmployee.isPresent()) {
+            Employee emp = existingEmployee.get();
+            emp.setName(name);
+            emp.setSalary(salary);
+            return repo.save(emp);
+        }
+        return null;
     }
 
     // Delete Employee
-    public boolean deleteEmployee(Long id) {
-        return employeeList.removeIf(employee -> employee.getId().equals(id));
+    public void deleteEmployee(Long id) {
+        repo.deleteById(id);
     }
 }

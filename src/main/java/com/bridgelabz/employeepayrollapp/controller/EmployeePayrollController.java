@@ -13,45 +13,41 @@ import java.util.Optional;
 @RestController
 public class EmployeePayrollController {
 
+
     @Autowired
     private EmployeePayrollService service;
 
     // Create Employee
     @PostMapping("/create")
     public ResponseEntity<String> createEmployee(@RequestBody Employee employee) {
-        service.createEmployee(employee);
-        return ResponseEntity.ok("Employee created successfully");
-    }
-
-    // Get All Employees
-    @GetMapping("/all")
-    public List<Employee> getAllEmployees() {
-        return service.getAllEmployees();
+        service.createEmployee(employee.getName(), employee.getSalary());
+        return ResponseEntity.ok("Employee is created successfully");
     }
 
     // Get Employee by ID
     @GetMapping("/{id}")
-    public ResponseEntity<Employee> getEmployeeById(@PathVariable Long id) {
-        return service.getEmployeeById(id)
-                .map(ResponseEntity::ok)
-                .orElse(ResponseEntity.notFound().build());
+    public ResponseEntity<Optional<Employee>> getEmployeeById(@PathVariable Long id) {
+        return ResponseEntity.ok(service.getEmployeeById(id));
+    }
+
+    // Get All Employees
+    @GetMapping("/all")
+    public ResponseEntity<List<Employee>> getAllEmployees() {
+        return ResponseEntity.ok(service.getAllEmployees());
     }
 
     // Update Employee
     @PutMapping("/update/{id}")
-    public ResponseEntity<String> updateEmployee(@PathVariable Long id, @RequestBody Employee updatedEmployee) {
-        return service.updateEmployee(id, updatedEmployee)
-                .map(e -> ResponseEntity.ok("Employee updated successfully"))
-                .orElse(ResponseEntity.notFound().build());
+    public ResponseEntity<Employee> updateEmployee(@PathVariable Long id, @RequestBody Employee employee) {
+        Employee updatedEmployee = service.updateEmployee(id, employee.getName(), employee.getSalary());
+        return ResponseEntity.ok(updatedEmployee);
     }
 
     // Delete Employee
     @DeleteMapping("/delete/{id}")
     public ResponseEntity<String> deleteEmployee(@PathVariable Long id) {
-        if (service.deleteEmployee(id)) {
-            return ResponseEntity.ok("Employee deleted successfully");
-        }
-        return ResponseEntity.notFound().build();
+        service.deleteEmployee(id);
+        return ResponseEntity.ok("Employee deleted successfully");
     }
 }
 

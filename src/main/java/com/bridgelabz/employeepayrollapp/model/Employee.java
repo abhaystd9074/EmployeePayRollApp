@@ -1,23 +1,22 @@
 package com.bridgelabz.employeepayrollapp.model;
 
 import jakarta.persistence.*;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 @Entity
-@Data
-@NoArgsConstructor
+@Data  // Generates Getters, Setters, toString, equals, hashCode
+@NoArgsConstructor  // Generates a No-Args Constructor
+@AllArgsConstructor  // Generates an All-Args Constructor
+@RequiredArgsConstructor  // Generates a Constructor with Required Fields (final or @NonNull)
 @Table(name="employees")
 public class Employee {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    private String name;
-    private double salary;
-    // parameterized constructor to provide data to variables in the database
-    public Employee(String name, double salary){
-        this.name=name;
-        this.salary=salary;
-    }
 
+    @NonNull  // Lombok ensures this field cannot be null
+    private String name;
+
+    @NonNull
+    private double salary;
 }
