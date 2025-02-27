@@ -35,7 +35,7 @@ public class EmployeePayrollController {
                 .orElseGet(() -> ResponseEntity.notFound().build());
     }
 
-    // Update Employee (PUT)
+    // Update Employee by id (PUT)
     @PutMapping("/update/{id}")
     public ResponseEntity<String> updateEmployee(@PathVariable Long id, @RequestBody Employee newEmployee) {
         return repo.findById(id).map(employee -> {
@@ -46,7 +46,7 @@ public class EmployeePayrollController {
         }).orElseGet(() -> ResponseEntity.notFound().build());
     }
 
-    // Delete Employee (DELETE)
+    // Delete Employee  by id(DELETE)
     @DeleteMapping("/delete/{id}")
     public ResponseEntity<String> deleteEmployee(@PathVariable Long id) {
         if (repo.existsById(id)) {
